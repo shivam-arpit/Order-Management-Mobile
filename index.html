@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retailer Hub - FMCG Distribution Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- In the <head> section of index.html -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+    <div class="phone-frame">
+        
+        <div class="toast" id="toast"></div>
+
+        <!-- Visit Overlay -->
+        <div class="visit-overlay" id="visitOverlay">
+            <div class="visit-card">
+                <div class="visit-icon" id="visitIcon">✓</div>
+                <div class="visit-title" id="visitTitle">Visit Started!</div>
+                <div class="visit-message" id="visitMessage">
+                    You can now perform shop operations. Don't forget to check out when done.
+                </div>
+                <button class="visit-button" onclick="closeVisitOverlay()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Disabled Operations Overlay -->
+        <div class="disabled-overlay" id="disabledOverlay">
+            <div class="disabled-message">
+                <h3>⚠️ Check-in Required</h3>
+                <p>Please check in to the shop first to perform operations.</p>
+            </div>
+        </div>
+
+        <!-- Shop Details Modal -->
+        <div class="modal-overlay" id="shopDetailsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title">Complete Shop Details</div>
+                        <div class="modal-subtitle">SuperMart Express</div>
+                    </div>
+                    <button class="modal-close" onclick="closeShopDetailsModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <span class="detail-label">Shop Name</span>
+                        <span class="detail-value" id="modalShopName">SuperMart Express</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Owner Name</span>
+                        <span class="detail-value" id="modalOwnerName">Rajesh Kumar</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Contact Number</span>
+                        <span class="detail-value" id="modalContactNumber">+91 98765 43210</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Shop Type</span>
+                        <span class="detail-value" id="modalShopType">Grocery Store</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Area</span>
+                        <span class="detail-value" id="modalArea">Koramangala, Bangalore</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Distributor</span>
+                        <span class="detail-value" id="modalDistributor">Metro Distributors</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Products</span>
+                        <span class="detail-value" id="modalProducts">Beverages, Snacks, Dairy</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Registration Date</span>
+                        <span class="detail-value">Jan 15, 2025</span>
+                    </div>
+                    <div class="detail-row" style="border-bottom: none;">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value" style="color: var(--accent);">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div class="screen active" id="homeScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <div class="header-title">Retailer Hub</div>
+                    <div class="header-subtitle">Distribution Management System</div>
+                </div>
+            </div>
+
+            <!-- In the HOME SCREEN section, update the dashboard-stats div: -->
+<!-- In the HOME SCREEN section, update the dashboard-stats div: -->
+<div class="dashboard-stats">
+    <div class="stat-card" onclick="navigateTo('shopsScreen')">
+        <div class="stat-value">247</div>
+        <div class="stat-label">Active Shops</div>
+    </div>
+    <div class="stat-card" onclick="navigateToRevenueDetails()">
+        <div class="stat-value">₹1.2L</div>
+        <div class="stat-label">Jan 2025 Revenue</div>
+    </div>
+    <div class="stat-card" onclick="navigateToOpenOrdersDetails()">
+        <div class="stat-value">18</div>
+        <div class="stat-label">Open Orders</div>
+    </div>
+    <div class="stat-card" onclick="navigateToReturnsManagement()">
+        <div class="stat-value">4</div>
+        <div class="stat-label">Open Returns</div>
+    </div>
+</div>
+            <div class="main-content">
+                <div class="section-header">
+                    <div class="section-title">Quick Actions</div>
+                </div>
+
+                <div class="module-grid">
+                    <div class="module-card" onclick="navigateTo('onboardingScreen')">
+                        <div class="module-icon">🏪</div>
+                        <div class="module-title">Shop Creation</div>
+                        <div class="module-subtitle">Onboard new shops</div>
+                    </div>
+
+                    <div class="module-card accent" onclick="navigateToOrderManagement()">
+    <div class="module-icon">📦</div>
+    <div class="module-title">Order Management</div>
+    <div class="module-subtitle">Track & manage orders</div>
+</div>
+
+                    <div class="module-card warning" onclick="navigateTo('routeScreen')">
+                        <div class="module-icon">🗺️</div>
+                        <div class="module-title">Route Management</div>
+                        <div class="module-subtitle">Optimize delivery routes</div>
+                    </div>
+<div class="module-card danger" onclick="navigateToReturnsManagement()">
+        <div class="module-icon">🔄</div>
+        <div class="module-title">Returns</div>
+        <div class="module-subtitle">Manage product returns</div>
+    </div>
+                   <div class="module-card info" onclick="navigateToAnalytics()">
+    <div class="module-icon">📊</div>
+    <div class="module-title">Analytics</div>
+    <div class="module-subtitle">View insights & reports</div>
+</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP ONBOARDING SCREEN -->
+        <div class="screen" id="onboardingScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+                    <div class="header-title">Create New Shop</div>
+                    <div class="header-subtitle">Enter shop details to onboard</div>
+                </div>
+            </div>
+
+            <form class="form-container" id="shopForm" onsubmit="submitShopForm(event)">
+                <div class="form-group">
+                    <label class="form-label">Shop Name <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="shopName" 
+                        placeholder="e.g., SuperMart Express"
+                        required
+                    >
+                    <div class="error-message" id="shopNameError">Please enter a shop name</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Owner Contact Name <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="ownerName" 
+                        placeholder="e.g., Rajesh Kumar"
+                        required
+                    >
+                    <div class="error-message" id="ownerNameError">Please enter owner name</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contact Number <span class="required">*</span></label>
+                    <input 
+                        type="tel" 
+                        class="form-input" 
+                        id="contactNumber" 
+                        placeholder="e.g., +91 98765 43210"
+                        required
+                    >
+                    <div class="error-message" id="contactNumberError">Please enter contact number</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Capture Location <span class="required">*</span></label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="locationField" 
+                            placeholder="Tap button to capture location"
+                            readonly
+                            style="flex: 1; background: #f0f0f0; color: var(--text-secondary); cursor: default;"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="captureLocation()" 
+                            style="
+                                background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                                color: white;
+                                border: none;
+                                border-radius: 12px;
+                                padding: 14px 18px;
+                                font-size: 14px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                white-space: nowrap;
+                                box-shadow: 0 4px 12px rgba(255,107,44,0.3);
+                                transition: all 0.3s ease;
+                                font-family: 'Work Sans', sans-serif;
+                            "
+                            id="locationBtn"
+                        >📍 Location</button>
+                    </div>
+                    <div class="error-message" id="locationError">Please capture shop location</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Shop Type <span class="required">*</span></label>
+                    <select class="form-select" id="shopType" required>
+                        <option value="">Select shop type</option>
+                        <option value="grocery">Grocery Store</option>
+                        <option value="pharmacy">Pharmacy</option>
+                        <option value="supermarket">Supermarket</option>
+                        <option value="convenience">Convenience Store</option>
+                        <option value="wholesale">Wholesale</option>
+                    </select>
+                    <div class="error-message" id="shopTypeError">Please select a shop type</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Area Name <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="areaName" 
+                        placeholder="e.g., Koramangala, Bangalore"
+                        required
+                    >
+                    <div class="error-message" id="areaNameError">Please enter area name</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Distributor Name <span class="required">*</span></label>
+                    <select class="form-select" id="distributorName" required>
+                        <option value="">Select distributor</option>
+                        <option value="metro-dist">Metro Distributors</option>
+                        <option value="prime-supply">Prime Supply Co.</option>
+                        <option value="rapid-goods">Rapid Goods Ltd.</option>
+                        <option value="urban-dist">Urban Distributors</option>
+                    </select>
+                    <div class="error-message" id="distributorError">Please select a distributor</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Products <span class="required">*</span></label>
+                    <div class="products-grid" id="productsGrid">
+                        <div class="product-option" onclick="toggleProduct(this, 'beverages')">
+                            <div class="product-checkbox"></div>
+                            <span>🥤 Beverages</span>
+                        </div>
+                        <div class="product-option" onclick="toggleProduct(this, 'snacks')">
+                            <div class="product-checkbox"></div>
+                            <span>🍿 Snacks</span>
+                        </div>
+                        <div class="product-option" onclick="toggleProduct(this, 'dairy')">
+                            <div class="product-checkbox"></div>
+                            <span>🥛 Dairy</span>
+                        </div>
+                        <div class="product-option" onclick="toggleProduct(this, 'personal-care')">
+                            <div class="product-checkbox"></div>
+                            <span>🧴 Personal Care</span>
+                        </div>
+                        <div class="product-option" onclick="toggleProduct(this, 'household')">
+                            <div class="product-checkbox"></div>
+                            <span>🧹 Household</span>
+                        </div>
+                        <div class="product-option" onclick="toggleProduct(this, 'packaged-food')">
+                            <div class="product-checkbox"></div>
+                            <span>🍱 Packaged Food</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="productsError">Please select at least one product</div>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Create Shop
+                </button>
+            </form>
+        </div>
+
+        <!-- SHOP DETAILS SCREEN -->
+        <div class="screen" id="shopDetailsScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <div class="header-top">
+                        <button class="back-button" onclick="navigateTo('shopsScreen')">←</button>
+                        <button class="check-in-button" id="checkInBtn" onclick="toggleCheckIn()">
+                            <span id="checkInIcon">📍</span>
+                            <span id="checkInText">Check In</span>
+                        </button>
+                    </div>
+                    <div class="header-title">Shop Details</div>
+                    <div class="header-subtitle">Manage shop operations</div>
+                </div>
+            </div>
+
+            <div class="shop-info-card">
+                <div class="shop-info-header">
+                    <div class="shop-name" id="detailShopName">SuperMart Express</div>
+                    <button class="view-all-btn" onclick="showShopDetailsModal()">View All</button>
+                </div>
+                <div class="shop-meta">
+                    <div class="shop-meta-item">
+                        <div class="shop-meta-icon">👤</div>
+                        <span id="detailOwnerName">Rajesh Kumar</span>
+                    </div>
+                    <div class="shop-meta-item">
+                        <div class="shop-meta-icon">🏪</div>
+                        <span id="detailShopType">Grocery Store</span>
+                    </div>
+                    <div class="shop-meta-item">
+                        <div class="shop-meta-icon">📍</div>
+                        <span id="detailAreaName">Koramangala, Bangalore</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card outstanding">
+                    <div class="analytics-value">₹45.2K</div>
+                    <div class="analytics-label">Shop Outstanding</div>
+                </div>
+                <div class="analytics-card spend">
+                    <div class="analytics-value">₹2.8L</div>
+                    <div class="analytics-label">Total Spend</div>
+                </div>
+                <div class="analytics-card visits">
+                    <div class="analytics-value">127</div>
+                    <div class="analytics-label">Visit Number</div>
+                </div>
+            </div>
+
+            <div class="tabs-container">
+                <button class="tab-button active" onclick="switchTab(event, 'orders')">Orders</button>
+                <button class="tab-button" onclick="switchTab(event, 'tasks')">Tasks</button>
+                <button class="tab-button" onclick="switchTab(event, 'complaints')">Complaints</button>
+            </div>
+
+            <!-- Tasks Tab -->
+            <div class="tab-content" id="tasksTab" style="padding-bottom: 120px;">
+                <div style="padding: 0 20px 12px;">
+                    <button class="create-task-button" onclick="showToast('Create Task feature coming soon!')">
+                        <span style="font-size: 16px;">✓</span>
+                        Create New Task
+                    </button>
+                </div>
+                
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-header">
+                            <div>
+                                <div class="task-title">Restock Beverages Section</div>
+                            </div>
+                            <span class="task-status in-progress">In Progress</span>
+                        </div>
+                        <div class="task-description">
+                            Refill all beverage shelves with new stock received yesterday. Priority on soft drinks and energy drinks.
+                        </div>
+                        <div class="task-meta">
+                            <span>📅 Due: Today, 5:00 PM</span>
+                            <span>👤 Assigned: Amit Sharma</span>
+                        </div>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-header">
+                            <div>
+                                <div class="task-title">Update Price Tags</div>
+                            </div>
+                            <span class="task-status pending">Open</span>
+                        </div>
+                        <div class="task-description">
+                            Update all price tags for promotional items. New pricing effective from tomorrow.
+                        </div>
+                        <div class="task-meta">
+                            <span>📅 Due: Tomorrow, 10:00 AM</span>
+                            <span>👤 Assigned: Priya Patel</span>
+                        </div>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-header">
+                            <div>
+                                <div class="task-title">Monthly Stock Audit</div>
+                            </div>
+                            <span class="task-status completed">Completed</span>
+                        </div>
+                        <div class="task-description">
+                            Complete monthly inventory audit and submit report. All categories covered.
+                        </div>
+                        <div class="task-meta">
+                            <span>✅ Completed: Jan 25, 2026</span>
+                            <span>👤 Assigned: Rajesh Kumar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="add-button" style="margin-top: 16px;" onclick="showToast('Create task feature coming soon!')">
+                    <span style="font-size: 18px;">+</span>
+                    Create New Task
+                </button>
+            </div>
+
+            <!-- Complaints Tab -->
+            <div class="tab-content" id="complaintsTab" style="padding-bottom: 120px;">
+                <div style="padding: 0 20px 12px;">
+                    <button class="create-complaint-button" onclick="showToast('Create Complaint feature coming soon!')">
+                        <span style="font-size: 16px;">⚠️</span>
+                        Create New Complaint
+                    </button>
+                </div>
+                
+                <div class="complaint-list">
+                    <div class="complaint-item">
+                        <div class="complaint-header">
+                            <div class="complaint-id">#CMP-2341</div>
+                            <span class="complaint-priority high">High</span>
+                        </div>
+                        <div class="complaint-title">Damaged Products in Last Shipment</div>
+                        <div class="complaint-description">
+                            Received 15 damaged units of glass bottles in yesterday's delivery. Requesting replacement and credit note.
+                        </div>
+                        <div class="task-meta" style="margin-top: 10px;">
+                            <span>📅 Raised: Jan 27, 2026</span>
+                            <span>⏱️ Status: Under Review</span>
+                        </div>
+                    </div>
+
+                    <div class="complaint-item">
+                        <div class="complaint-header">
+                            <div class="complaint-id">#CMP-2340</div>
+                            <span class="complaint-priority medium">Medium</span>
+                        </div>
+                        <div class="complaint-title">Delayed Delivery Issue</div>
+                        <div class="complaint-description">
+                            Last week's order arrived 2 days late causing stock shortage. Please ensure timely delivery.
+                        </div>
+                        <div class="task-meta" style="margin-top: 10px;">
+                            <span>📅 Raised: Jan 25, 2026</span>
+                            <span>✅ Status: Resolved</span>
+                        </div>
+                    </div>
+
+                    <div class="complaint-item">
+                        <div class="complaint-header">
+                            <div class="complaint-id">#CMP-2338</div>
+                            <span class="complaint-priority low">Low</span>
+                        </div>
+                        <div class="complaint-title">Invoice Discrepancy</div>
+                        <div class="complaint-description">
+                            Minor pricing difference noticed in invoice #INV-5623. Requesting verification.
+                        </div>
+                        <div class="task-meta" style="margin-top: 10px;">
+                            <span>📅 Raised: Jan 24, 2026</span>
+                            <span>⏱️ Status: In Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="add-button" style="margin-top: 16px;" onclick="showToast('Raise complaint feature coming soon!')">
+                    <span style="font-size: 18px;">+</span>
+                    Raise New Complaint
+                </button>
+            </div>
+
+           
+                <!-- Orders Tab -->
+                 <div class="tab-content active" id="ordersTab" style="padding-bottom: 120px;">
+    <div style="padding: 0 20px 12px;">
+        <button class="create-order-button" onclick="navigateTo('createOrderScreen')">
+            <span style="font-size: 16px;">🛒</span>
+            Create New Order
+        </button>
+    </div>
+
+    <div class="form-group" style="margin: 20px;">
+    <label class="form-label">Filter Orders</label>
+    <select class="form-select" id="orderStatusFilter" onchange="filterOrders(this.value)">
+        <option value="all">All Orders</option>
+        <option value="placed">Placed</option>
+        <option value="processing">Processing</option>
+        <option value="shipped">Shipped</option>
+        <option value="delivered">Delivered</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="cancelled">Returns</option>
+    </select>
+</div>
+
+    <div class="order-list-container" id="orderListContainer">
+        <!-- Orders will be dynamically populated here -->
+    </div>
+
+    <button class="add-button" style="margin-top: 16px;" onclick="navigateTo('createOrderScreen')">
+        <span style="font-size: 18px;">+</span>
+        Place New Order
+    </button>
+                 </div>
+        </div>
+
+        <!-- SHOPS LIST SCREEN -->
+        <div class="screen" id="shopsScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+                    <div class="header-title">All Shops</div>
+                    <div class="header-subtitle">247 active shops</div>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search shops..." id="shopSearch" oninput="filterShops()">
+            </div>
+
+           <div class="form-group" style="margin: 20px;">
+    <label class="form-label">Filter by Shop Type</label>
+    <select class="form-select" id="shopTypeFilter" onchange="filterShopsByType(this.value)">
+        <option value="all">All Shop Types</option>
+        <option value="Recently visited">Recently visited</option>
+        <option value="Recently Created">Recently Created</option>
+        <option value="grocery">Grocery Store</option>
+        <option value="pharmacy">Pharmacy</option>
+        <option value="supermarket">Supermarket</option>
+        <option value="wholesale">Wholesale</option>
+        <option value="convenience">Convenience Store</option>
+    </select>
+</div>
+            <div class="shop-list" id="shopList" style="padding-bottom: 120px;">
+                <div class="shop-list-item" data-type="grocery" onclick="viewShopDetails('SuperMart Express', 'Rajesh Kumar', 'Grocery Store', 'Koramangala, Bangalore')">
+                    <div class="shop-list-header">
+                        <div>
+                            <div class="shop-list-name">SuperMart Express</div>
+                            <div class="shop-list-type">Grocery Store</div>
+                        </div>
+                        <span class="shop-list-badge">Active</span>
+                    </div>
+                    <div class="shop-list-meta">
+                        <span>📍 Koramangala, Bangalore</span>
+                        <span>👤 Rajesh Kumar</span>
+                    </div>
+                </div>
+
+                <div class="shop-list-item" data-type="pharmacy">
+                    <div class="shop-list-header">
+                        <div>
+                            <div class="shop-list-name">MedPlus Pharmacy</div>
+                            <div class="shop-list-type">Pharmacy</div>
+                        </div>
+                        <span class="shop-list-badge">Active</span>
+                    </div>
+                    <div class="shop-list-meta">
+                        <span>📍 Indiranagar, Bangalore</span>
+                        <span>👤 Priya Sharma</span>
+                    </div>
+                </div>
+
+                <div class="shop-list-item" data-type="supermarket">
+                    <div class="shop-list-header">
+                        <div>
+                            <div class="shop-list-name">Big Bazaar</div>
+                            <div class="shop-list-type">Supermarket</div>
+                        </div>
+                        <span class="shop-list-badge">Active</span>
+                    </div>
+                    <div class="shop-list-meta">
+                        <span>📍 Whitefield, Bangalore</span>
+                        <span>👤 Amit Patel</span>
+                    </div>
+                </div>
+
+                <div class="shop-list-item" data-type="grocery">
+                    <div class="shop-list-header">
+                        <div>
+                            <div class="shop-list-name">Fresh Mart</div>
+                            <div class="shop-list-type">Grocery Store</div>
+                        </div>
+                        <span class="shop-list-badge">Active</span>
+                    </div>
+                    <div class="shop-list-meta">
+                        <span>📍 HSR Layout, Bangalore</span>
+                        <span>👤 Suresh Reddy</span>
+                    </div>
+                </div>
+
+                <div class="shop-list-item" data-type="wholesale">
+                    <div class="shop-list-header">
+                        <div>
+                            <div class="shop-list-name">Wholesale Hub</div>
+                            <div class="shop-list-type">Wholesale</div>
+                        </div>
+                        <span class="shop-list-badge">Active</span>
+                    </div>
+                    <div class="shop-list-meta">
+                        <span>📍 Electronic City, Bangalore</span>
+                        <span>👤 Ravi Kumar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- ROUTE MANAGEMENT SCREEN -->
+<div class="screen" id="routeScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Route Management</div>
+            <div class="header-subtitle">Optimize delivery routes across Pune</div>
+            <div class="header-actions">
+                <button class="header-action-btn active" id="mapViewBtn" onclick="switchRouteView('map')">
+                    <span style="font-size: 18px;">🗺️</span> Map View
+                </button>
+                <button class="header-action-btn" id="listViewBtn" onclick="switchRouteView('list')">
+                    <span style="font-size: 18px;">📊</span> Advanced List
+                </button>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <!-- Map View -->
+    <div id="mapView" class="route-view">
+        <div class="map-wrapper" style="padding: 20px; padding-bottom: 80px;">
+            <div class="map-container" style="height: calc(100vh - 300px); min-height: 400px; border-radius: 20px; overflow: hidden; position: relative;">
+                <div id="realMap" style="height: 100%; width: 100%;"></div>
+                
+                <!-- Map Controls -->
+                <div class="map-controls" style="position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+                    <button class="map-control-btn" onclick="mapZoomIn()" title="Zoom In">
+                        +
+                    </button>
+                    <button class="map-control-btn" onclick="mapZoomOut()" title="Zoom Out">
+                        −
+                    </button>
+                    <button class="map-control-btn" onclick="resetMapView()" title="Reset View">
+                        ↺
+                    </button>
+                    <button class="map-control-btn" onclick="locateUser()" title="My Location">
+                        📍
+                    </button>
+                </div>
+                
+               
+            </div>
+            
+            <!-- Route Details Panel -->
+            <div class="route-details-panel" id="routeDetailsPanel">
+                <div class="route-details-header">
+                    <div>
+                        <div class="route-details-title" id="panelRouteTitle">Route 1 - North Pune</div>
+                    </div>
+                    <button class="route-details-close" onclick="closeRoutePanel()">×</button>
+                </div>
+                <div class="route-details-stats">
+                    <div class="route-stat-item">
+                        <div class="route-stat-value" id="panelShops">18</div>
+                        <div class="route-stat-label">Shops</div>
+                    </div>
+                    <div class="route-stat-item">
+                        <div class="route-stat-value" id="panelDistance">25.5km</div>
+                        <div class="route-stat-label">Distance</div>
+                    </div>
+                    <div class="route-stat-item">
+                        <div class="route-stat-value" id="panelTime">4.5hrs</div>
+                        <div class="route-stat-label">Duration</div>
+                    </div>
+                </div>
+                <div id="panelShopsList">
+                    <!-- Shops will be populated here -->
+                </div>
+                <button class="view-details-btn" onclick="showRouteDetailsModal()" 
+                        style="width: 100%; margin-top: 12px;">
+                    View Full Details →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced List View -->
+    <div id="listView" class="route-view" style="display: none; padding-bottom: 120px;">
+        <div class="route-list-enhanced" id="routeListEnhanced">
+            <!-- Route cards will be dynamically populated -->
+        </div>
+    </div>
+</div>
+<!-- Enhanced Route Details Modal -->
+<div class="modal-overlay" id="enhancedRouteModal">
+    <div class="modal" style="max-width: 500px;">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title" id="enhancedRouteTitle">Route 1 - North Pune</div>
+                <div class="modal-subtitle" id="enhancedRouteSubtitle">18 shops • 25.5 km • 4.5 hrs</div>
+            </div>
+            <button class="modal-close" onclick="closeEnhancedRouteModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <div class="section-title">Route Performance</div>
+                <div class="route-summary-cards">
+                    <div class="route-summary-card">
+                        <div class="route-summary-value" id="modalShops">18</div>
+                        <div class="route-summary-label">Shops Covered</div>
+                    </div>
+                    <div class="route-summary-card">
+                        <div class="route-summary-value" id="modalEfficiency">85%</div>
+                        <div class="route-summary-label">Efficiency</div>
+                    </div>
+                    <div class="route-summary-card">
+                        <div class="route-summary-value" id="modalRevenue">₹1.2L</div>
+                        <div class="route-summary-label">Avg Revenue</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Shops on Route</div>
+                <div class="route-shops-grid" id="modalShopsGrid">
+                    <!-- Shops will be populated here -->
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Optimization Suggestions</div>
+                <div class="optimization-suggestions" id="optimizationSuggestions">
+                    <!-- Suggestions will be populated here -->
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeEnhancedRouteModal()">
+                    Close
+                </button>
+                <button class="modal-btn primary" onclick="exportRouteData()">
+                    📊 Export Report
+                </button>
+                <button class="modal-btn edit" onclick="optimizeRoute()">
+                    ⚡ Optimize Route
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Route Details Modal -->
+        <div class="modal-overlay" id="routeModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title" id="modalRouteTitle">Route 1 - North Zone</div>
+                        <div class="modal-subtitle" id="modalRouteStats">18 shops • 25.5 km • 4.5 hrs</div>
+                    </div>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="route-list" id="modalShopList">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE ORDER SCREEN -->
+        <div class="screen" id="createOrderScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <button class="back-button" onclick="navigateTo('shopDetailsScreen'); switchTab({ target: document.querySelectorAll('.tab-button')[0] }, 'orders');">←</button>
+                    <div class="header-title">Create Order</div>
+                    <div class="header-subtitle">Select products and quantities</div>
+                </div>
+            </div>
+
+            <div class="product-search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="product-search-input" placeholder="Search products..." id="productSearchInput" oninput="filterProducts()">
+            </div>
+
+            <div class="filter-chips">
+                <div class="filter-chip active" onclick="filterByCategory('all')">All</div>
+                <div class="filter-chip" onclick="filterByCategory('beverage')">Beverages</div>
+                <div class="filter-chip" onclick="filterByCategory('snacks')">Snacks</div>
+                <div class="filter-chip" onclick="filterByCategory('dairy')">Dairy</div>
+            </div>
+
+            <div class="products-list" id="productsList"></div>
+
+            <div class="review-order-floating" id="reviewOrderFloat" style="display: none;">
+                <div class="review-order-card">
+                    <div class="order-summary-info">
+                        <div class="items-count" id="selectedItemsCount">0 items selected</div>
+                        <div class="order-total-amount" id="orderTotalDisplay">₹0</div>
+                    </div>
+                    <button class="review-order-btn" onclick="navigateTo('orderSummaryScreen')">
+                        Review Order
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDER SUMMARY SCREEN -->
+        <div class="screen" id="orderSummaryScreen">
+            <div class="app-header">
+                <div class="header-content">
+                    <button class="back-button" onclick="navigateTo('createOrderScreen')">←</button>
+                    <div class="header-title">Order Summary</div>
+                    <div class="header-subtitle">Review and confirm your order</div>
+                </div>
+            </div>
+
+            <div class="summary-section" style="padding-bottom: 120px;">
+                <!-- Order Value Breakdown -->
+                <div class="summary-card">
+                    <div class="summary-title">Order Value Breakdown</div>
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value" id="summarySubtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Scheme Discount</span>
+                        <span class="summary-value" id="summaryDiscount">-₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">GST (12%)</span>
+                        <span class="summary-value" id="summaryGST">₹0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="summary-label" style="font-size: 16px; font-weight: 800;">Net Order Value</span>
+                        <span class="summary-value highlight" id="summaryNetValue">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Validation Alerts -->
+                <div id="validationAlerts"></div>
+
+                <!-- Shop Financial Snapshot -->
+                <div class="summary-card">
+                    <div class="summary-title">Shop Financial Snapshot</div>
+                    <div class="financial-cards">
+                        <div class="financial-card">
+                            <div class="financial-value" style="color: var(--primary);">₹5.0L</div>
+                            <div class="financial-label">Credit Limit</div>
+                        </div>
+                        <div class="financial-card danger">
+                            <div class="financial-value" style="color: var(--danger);">₹45.2K</div>
+                            <div class="financial-label">Outstanding</div>
+                        </div>
+                        <div class="financial-card success">
+                            <div class="financial-value" style="color: var(--accent);" id="availableCredit">₹4.5L</div>
+                            <div class="financial-label">Available</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Details -->
+                <div class="summary-card">
+                    <div class="summary-title">Delivery Details</div>
+                    <div class="form-group">
+                        <label class="form-label">Expected Delivery Date</label>
+                        <input type="date" class="form-input" id="deliveryDate" min="2026-01-31">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Delivery Route</label>
+                        <select class="form-select" id="deliveryRoute">
+                            <option value="route1">Route 1 - North Zone</option>
+                            <option value="route2">Route 2 - East Zone</option>
+                            <option value="route3">Route 3 - South Zone</option>
+                            <option value="route4">Route 4 - West Zone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assigned Sales Rep</label>
+                        <input type="text" class="form-input" value="Current User (Auto-filled)" disabled>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="summary-card">
+                    <div class="summary-title">Payment Details</div>
+                    <label class="form-label">Payment Mode</label>
+                    <div class="payment-mode-selector">
+                        <div class="payment-option selected" onclick="selectPaymentMode('credit')">
+                            💳 Credit
+                        </div>
+                        <div class="payment-option" onclick="selectPaymentMode('cash')">
+                            💵 Cash
+                        </div>
+                        <div class="payment-option" onclick="selectPaymentMode('upi')">
+                            📱 UPI
+                        </div>
+                        <div class="payment-option" onclick="selectPaymentMode('mixed')">
+                            🔄 Mixed
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Confirmation -->
+                <div class="summary-card">
+                    <div class="summary-title">Order Confirmation</div>
+                    <div class="confirmation-checklist">
+                        <div class="confirmation-item">
+                            <div class="confirmation-checkbox" id="confirmCheckbox" onclick="toggleConfirmation()"></div>
+                            <div class="confirmation-text">I confirm that order details are accurate</div>
+                        </div>
+                    </div>
+                    <div class="geo-location-display" id="geoLocation">
+                        📍 Capturing location...
+                    </div>
+                    <button class="place-order-button" id="placeOrderBtn" onclick="placeOrder()" disabled>
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div> 
+        <!-- After all other screens and before the bottom nav -->
+<!-- Add this after the ORDER SUMMARY SCREEN -->
+<!-- ORDER MANAGEMENT SCREEN -->
+<div class="screen" id="orderManagementScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Order Management</div>
+            <div class="header-subtitle">Track and manage all orders</div>
+        </div>
+    </div>
+
+    <div class="filter-chips" style="padding: 20px 20px 12px;">
+        <div class="filter-chip active" onclick="filterOrders('all')">All Orders</div>
+        <div class="filter-chip" onclick="filterOrders('pending')">Open</div>
+        <div class="filter-chip" onclick="filterOrders('processing')">Processing</div>
+        <div class="filter-chip" onclick="filterOrders('shipped')">Shipped</div>
+        <div class="filter-chip" onclick="filterOrders('delivered')">Delivered</div>
+        <div class="filter-chip" onclick="filterOrders('cancelled')">Cancelled</div>
+    </div>
+
+    <div class="search-bar" style="margin: 0 20px 20px;">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Search by order ID, shop name..." id="orderSearch" oninput="searchOrders()">
+    </div>
+
+    <div class="order-list-container" id="globalOrderList" style="padding: 0 20px 120px;">
+        <!-- Orders will be dynamically populated -->
+        <div class="empty-state" id="noOrdersMessage">
+            <div class="empty-icon">📦</div>
+            <div class="empty-title">No Orders Found</div>
+            <div class="empty-message">Start creating orders from shop details</div>
+        </div>
+    </div>
+</div>
+<!-- Add this after the ORDER MANAGEMENT SCREEN and before the bottom nav -->
+<!-- MONTHLY REVENUE DETAILS SCREEN -->
+<div class="screen" id="revenueScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Revenue Details</div>
+            <div class="header-subtitle">Monthly revenue breakdown & analytics</div>
+        </div>
+    </div>
+
+    <div class="revenue-overview" style="padding: 20px;">
+        <div class="revenue-summary-card">
+            <div class="revenue-summary-value">₹1,20,489</div>
+            <div class="revenue-summary-label">January 2026 Revenue</div>
+            <div class="revenue-growth">
+                <span class="growth-indicator positive">↑ 12.5%</span>
+                <span class="growth-text">vs last month</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="revenue-breakdown" style="padding: 0 20px 120px;">
+        <!-- Revenue by Category -->
+        <div class="breakdown-section">
+            <div class="section-title">Revenue by Category</div>
+            <div class="category-chart">
+                <div class="chart-item">
+                    <div class="chart-bar" style="width: 35%; background: var(--primary);"></div>
+                    <div class="chart-label">
+                        <span>🥤 Beverages</span>
+                        <span>₹42,170 (35%)</span>
+                    </div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-bar" style="width: 25%; background: var(--accent);"></div>
+                    <div class="chart-label">
+                        <span>🍿 Snacks</span>
+                        <span>₹30,122 (25%)</span>
+                    </div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-bar" style="width: 20%; background: var(--info);"></div>
+                    <div class="chart-label">
+                        <span>🥛 Dairy</span>
+                        <span>₹24,098 (20%)</span>
+                    </div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-bar" style="width: 15%; background: var(--warning);"></div>
+                    <div class="chart-label">
+                        <span>🧴 Personal Care</span>
+                        <span>₹18,073 (15%)</span>
+                    </div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-bar" style="width: 5%; background: var(--danger);"></div>
+                    <div class="chart-label">
+                        <span>🧹 Household</span>
+                        <span>₹6,026 (5%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trend -->
+        <div class="breakdown-section">
+            <div class="section-title">6-Month Trend</div>
+            <div class="trend-chart">
+                <div class="trend-bar">
+                    <div class="trend-month">Aug</div>
+                    <div class="trend-value" style="height: 50%;"></div>
+                    <div class="trend-amount">₹86K</div>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-month">Sep</div>
+                    <div class="trend-value" style="height: 60%;"></div>
+                    <div class="trend-amount">₹94K</div>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-month">Oct</div>
+                    <div class="trend-value" style="height: 75%;"></div>
+                    <div class="trend-amount">₹1.05L</div>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-month">Nov</div>
+                    <div class="trend-value" style="height: 85%;"></div>
+                    <div class="trend-amount">₹1.12L</div>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-month">Dec</div>
+                    <div class="trend-value" style="height: 95%;"></div>
+                    <div class="trend-amount">₹1.07L</div>
+                </div>
+                <div class="trend-bar highlight">
+                    <div class="trend-month">Jan</div>
+                    <div class="trend-value" style="height: 100%; background: var(--accent);"></div>
+                    <div class="trend-amount">₹1.20L</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Performing Shops -->
+        <div class="breakdown-section">
+            <div class="section-title">Top 5 Revenue Shops</div>
+            <div class="top-shops-list">
+                <div class="shop-revenue-item">
+                    <div class="shop-rank">1</div>
+                    <div class="shop-info">
+                        <div class="shop-name">SuperMart Express</div>
+                        <div class="shop-location">Koramangala</div>
+                    </div>
+                    <div class="shop-revenue">
+                        <div class="revenue-amount">₹24,850</div>
+                        <div class="revenue-percent">20.7%</div>
+                    </div>
+                </div>
+                <div class="shop-revenue-item">
+                    <div class="shop-rank">2</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Big Bazaar</div>
+                        <div class="shop-location">Whitefield</div>
+                    </div>
+                    <div class="shop-revenue">
+                        <div class="revenue-amount">₹18,620</div>
+                        <div class="revenue-percent">15.5%</div>
+                    </div>
+                </div>
+                <div class="shop-revenue-item">
+                    <div class="shop-rank">3</div>
+                    <div class="shop-info">
+                        <div class="shop-name">MedPlus Pharmacy</div>
+                        <div class="shop-location">Indiranagar</div>
+                    </div>
+                    <div class="shop-revenue">
+                        <div class="revenue-amount">₹15,462</div>
+                        <div class="revenue-percent">12.9%</div>
+                    </div>
+                </div>
+                <div class="shop-revenue-item">
+                    <div class="shop-rank">4</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Wholesale Hub</div>
+                        <div class="shop-location">Electronic City</div>
+                    </div>
+                    <div class="shop-revenue">
+                        <div class="revenue-amount">₹12,450</div>
+                        <div class="revenue-percent">10.4%</div>
+                    </div>
+                </div>
+                <div class="shop-revenue-item">
+                    <div class="shop-rank">5</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Fresh Mart</div>
+                        <div class="shop-location">HSR Layout</div>
+                    </div>
+                    <div class="shop-revenue">
+                        <div class="revenue-amount">₹9,875</div>
+                        <div class="revenue-percent">8.2%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Metrics -->
+        <div class="revenue-metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">📦</div>
+                <div class="metric-value">287</div>
+                <div class="metric-label">Total Orders</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🏪</div>
+                <div class="metric-value">45</div>
+                <div class="metric-label">Active Shops</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-value">₹5,342</div>
+                <div class="metric-label">Avg Order Value</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📈</div>
+                <div class="metric-value">12.5%</div>
+                <div class="metric-label">Growth Rate</div>
+            </div>
+        </div>
+
+        <!-- Payment Method Breakdown -->
+        <div class="breakdown-section">
+            <div class="section-title">Payment Methods</div>
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-info">
+                        <div class="payment-name">Credit</div>
+                        <div class="payment-stats">₹84,342 (70%)</div>
+                    </div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">💵</div>
+                    <div class="payment-info">
+                        <div class="payment-name">Cash</div>
+                        <div class="payment-stats">₹24,098 (20%)</div>
+                    </div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">📱</div>
+                    <div class="payment-info">
+                        <div class="payment-name">UPI</div>
+                        <div class="payment-stats">₹12,049 (10%)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Report Button -->
+        <button class="download-report-btn" onclick="downloadRevenueReport()">
+            📥 Download Detailed Report
+        </button>
+    </div>
+</div>
+
+<!-- OPEN ORDERS DETAILS SCREEN -->
+<div class="screen" id="openOrdersScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Open Orders</div>
+            <div class="header-subtitle">18 orders open & processing</div>
+        </div>
+    </div>
+
+    <div class="open-orders-overview" style="padding: 20px;">
+        <div class="orders-summary-card">
+            <div class="orders-summary-value">18</div>
+            <div class="orders-summary-label">Total Open Orders</div>
+            <div class="orders-summary-trend">
+                <span class="trend-indicator positive">↑ 3</span>
+                <span class="trend-text">vs last week</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="orders-breakdown" style="padding: 0 20px 120px;">
+        <!-- Orders by Status -->
+        <div class="breakdown-section">
+            <div class="section-title">Orders by Status</div>
+            <div class="status-chart">
+                <div class="status-item">
+                    <div class="status-indicator" style="background: var(--primary);"></div>
+                    <div class="status-info">
+                        <div class="status-name">Processing</div>
+                        <div class="status-count">12 orders</div>
+                    </div>
+                    <div class="status-percent">67%</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-indicator" style="background: var(--warning);"></div>
+                    <div class="status-info">
+                        <div class="status-name">open</div>
+                        <div class="status-count">4 orders</div>
+                    </div>
+                    <div class="status-percent">22%</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-indicator" style="background: var(--info);"></div>
+                    <div class="status-info">
+                        <div class="status-name">Shipped</div>
+                        <div class="status-count">2 orders</div>
+                    </div>
+                    <div class="status-percent">11%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Urgent Orders -->
+        <div class="breakdown-section">
+            <div class="section-title">Urgent Orders <span class="urgent-badge">⚠️</span></div>
+            <div class="urgent-orders-list">
+                <div class="urgent-order-item">
+                    <div class="urgent-order-id">ORD-8825</div>
+                    <div class="urgent-order-info">
+                        <div class="urgent-order-shop">SuperMart Express</div>
+                        <div class="urgent-order-deadline">Due: Today, 5:00 PM</div>
+                    </div>
+                    <div class="urgent-order-status">Processing</div>
+                </div>
+                <div class="urgent-order-item">
+                    <div class="urgent-order-id">ORD-8823</div>
+                    <div class="urgent-order-info">
+                        <div class="urgent-order-shop">MedPlus Pharmacy</div>
+                        <div class="urgent-order-deadline">Due: Tomorrow, 10:00 AM</div>
+                    </div>
+                    <div class="urgent-order-status">Open</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Open Orders -->
+        <div class="breakdown-section">
+            <div class="section-title">Recent Open Orders</div>
+            <div class="recent-orders-list">
+                <div class="recent-order-item" onclick="viewOrderDetails('ORD-8824')">
+                    <div class="recent-order-header">
+                        <div class="recent-order-id">ORD-8824</div>
+                        <span class="recent-order-status">Processing</span>
+                    </div>
+                    <div class="recent-order-shop">Fresh Mart</div>
+                    <div class="recent-order-details">
+                        <span>📅 Jan 29, 2026</span>
+                        <span>💰 ₹18,450</span>
+                    </div>
+                </div>
+                <div class="recent-order-item" onclick="viewOrderDetails('ORD-8822')">
+                    <div class="recent-order-header">
+                        <div class="recent-order-id">ORD-8822</div>
+                        <span class="recent-order-status">Shipped</span>
+                    </div>
+                    <div class="recent-order-shop">Big Bazaar</div>
+                    <div class="recent-order-details">
+                        <span>📅 Jan 28, 2026</span>
+                        <span>💰 ₹32,150</span>
+                    </div>
+                </div>
+                <div class="recent-order-item" onclick="viewOrderDetails('ORD-8821')">
+                    <div class="recent-order-header">
+                        <div class="recent-order-id">ORD-8821</div>
+                        <span class="recent-order-status">Processing</span>
+                    </div>
+                    <div class="recent-order-shop">SuperMart Express</div>
+                    <div class="recent-order-details">
+                        <span>📅 Jan 28, 2026</span>
+                        <span>💰 ₹26,880</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Metrics -->
+        <div class="order-metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">⏱️</div>
+                <div class="metric-value">2.5</div>
+                <div class="metric-label">Avg Processing Days</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-value">₹3.8L</div>
+                <div class="metric-label">Total Value</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📦</div>
+                <div class="metric-value">1,250</div>
+                <div class="metric-label">Total Items</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🚚</div>
+                <div class="metric-value">4</div>
+                <div class="metric-label">Pending Delivery</div>
+            </div>
+        </div>
+
+        <!-- View All Orders Button -->
+        <button class="view-all-orders-btn" onclick="navigateTo('orderManagementScreen')">
+            📋 View All Orders 
+        </button>
+    </div>
+</div>
+<!-- ANALYTICS SCREEN -->
+<div class="screen" id="analyticsScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Analytics Dashboard</div>
+            <div class="header-subtitle">Performance insights & trends</div>
+        </div>
+    </div>
+
+    <div class="analytics-dashboard" style="padding: 20px 20px 120px;">
+        <!-- Quick Stats -->
+        <div class="analytics-stats-grid">
+            <div class="analytics-stat-card primary">
+                <div class="analytics-stat-value">₹1.2L</div>
+                <div class="analytics-stat-label">Monthly Revenue</div>
+                <div class="analytics-stat-change positive">↑ 12.5%</div>
+            </div>
+            <div class="analytics-stat-card accent">
+                <div class="analytics-stat-value">247</div>
+                <div class="analytics-stat-label">Active Shops</div>
+                <div class="analytics-stat-change positive">↑ 8%</div>
+            </div>
+            <div class="analytics-stat-card warning">
+                <div class="analytics-stat-value">287</div>
+                <div class="analytics-stat-label">Total Orders</div>
+                <div class="analytics-stat-change positive">↑ 15%</div>
+            </div>
+            <div class="analytics-stat-card info">
+                <div class="analytics-stat-value">85%</div>
+                <div class="analytics-stat-label">Route Efficiency</div>
+                <div class="analytics-stat-change negative">↓ 2%</div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="analytics-section">
+            <div class="section-title">Revenue Trend (Last 6 Months)</div>
+            <div class="chart-container">
+                <div class="trend-chart-large">
+                    <div class="trend-bar-large">
+                        <div class="trend-month">Aug</div>
+                        <div class="trend-value" style="height: 50%;"></div>
+                        <div class="trend-amount">₹86K</div>
+                    </div>
+                    <div class="trend-bar-large">
+                        <div class="trend-month">Sep</div>
+                        <div class="trend-value" style="height: 60%;"></div>
+                        <div class="trend-amount">₹94K</div>
+                    </div>
+                    <div class="trend-bar-large">
+                        <div class="trend-month">Oct</div>
+                        <div class="trend-value" style="height: 75%;"></div>
+                        <div class="trend-amount">₹1.05L</div>
+                    </div>
+                    <div class="trend-bar-large">
+                        <div class="trend-month">Nov</div>
+                        <div class="trend-value" style="height: 85%;"></div>
+                        <div class="trend-amount">₹1.12L</div>
+                    </div>
+                    <div class="trend-bar-large">
+                        <div class="trend-month">Dec</div>
+                        <div class="trend-value" style="height: 95%;"></div>
+                        <div class="trend-amount">₹1.07L</div>
+                    </div>
+                    <div class="trend-bar-large highlight">
+                        <div class="trend-month">Jan</div>
+                        <div class="trend-value" style="height: 100%;"></div>
+                        <div class="trend-amount">₹1.20L</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Performing Routes -->
+        <div class="analytics-section">
+            <div class="section-title">Top Performing Routes</div>
+            <div class="route-performance-list">
+                <div class="route-performance-item">
+                    <div class="route-rank">1</div>
+                    <div class="route-info">
+                        <div class="route-name">Route 4 - West Pune</div>
+                        <div class="route-stats">13 shops • 92% efficiency</div>
+                    </div>
+                    <div class="route-revenue">₹1.45L</div>
+                </div>
+                <div class="route-performance-item">
+                    <div class="route-rank">2</div>
+                    <div class="route-info">
+                        <div class="route-name">Route 1 - North Pune</div>
+                        <div class="route-stats">18 shops • 85% efficiency</div>
+                    </div>
+                    <div class="route-revenue">₹1.20L</div>
+                </div>
+                <div class="route-performance-item">
+                    <div class="route-rank">3</div>
+                    <div class="route-info">
+                        <div class="route-name">Route 2 - East Pune</div>
+                        <div class="route-stats">15 shops • 78% efficiency</div>
+                    </div>
+                    <div class="route-revenue">₹95K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shop Performance -->
+        <div class="analytics-section">
+            <div class="section-title">Shop Performance</div>
+            <div class="shop-performance-grid">
+                <div class="shop-performance-card">
+                    <div class="shop-performance-header">
+                        <div class="shop-name">SuperMart Express</div>
+                        <div class="shop-rating excellent">Excellent</div>
+                    </div>
+                    <div class="shop-metrics">
+                        <div class="shop-metric">
+                            <div class="metric-value">₹2.8L</div>
+                            <div class="metric-label">Total Spend</div>
+                        </div>
+                        <div class="shop-metric">
+                            <div class="metric-value">127</div>
+                            <div class="metric-label">Visits</div>
+                        </div>
+                        <div class="shop-metric">
+                            <div class="metric-value">45.2K</div>
+                            <div class="metric-label">Outstanding</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shop-performance-card">
+                    <div class="shop-performance-header">
+                        <div class="shop-name">MedPlus Pharmacy</div>
+                        <div class="shop-rating good">Good</div>
+                    </div>
+                    <div class="shop-metrics">
+                        <div class="shop-metric">
+                            <div class="metric-value">₹1.9L</div>
+                            <div class="metric-label">Total Spend</div>
+                        </div>
+                        <div class="shop-metric">
+                            <div class="metric-value">98</div>
+                            <div class="metric-label">Visits</div>
+                        </div>
+                        <div class="shop-metric">
+                            <div class="metric-value">32.1K</div>
+                            <div class="metric-label">Outstanding</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Category Distribution -->
+        <div class="analytics-section">
+            <div class="section-title">Product Category Distribution</div>
+            <div class="category-distribution">
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">🥤</span>
+                        <span>Beverages</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: 35%; background: var(--primary);"></div>
+                    </div>
+                    <div class="category-percent">35%</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">🍿</span>
+                        <span>Snacks</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: 25%; background: var(--accent);"></div>
+                    </div>
+                    <div class="category-percent">25%</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">🥛</span>
+                        <span>Dairy</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: 20%; background: var(--info);"></div>
+                    </div>
+                    <div class="category-percent">20%</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">🧴</span>
+                        <span>Personal Care</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: 15%; background: var(--warning);"></div>
+                    </div>
+                    <div class="category-percent">15%</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">🧹</span>
+                        <span>Household</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: 5%; background: var(--danger);"></div>
+                    </div>
+                    <div class="category-percent">5%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Reports Button -->
+        <button class="download-analytics-btn" onclick="downloadAnalyticsReport()">
+            📊 Download Full Analytics Report
+        </button>
+    </div>
+</div>
+<!-- RETURNS MANAGEMENT SCREEN -->
+<div class="screen" id="returnsManagementScreen">
+    <div class="app-header">
+        <div class="header-content">
+            <button class="back-button" onclick="navigateTo('homeScreen')">←</button>
+            <div class="header-title">Returns Management</div>
+            <div class="header-subtitle">Track and manage product returns</div>
+        </div>
+    </div>
+
+    <div class="filter-chips" style="padding: 20px 20px 12px;">
+        <div class="filter-chip active" onclick="filterReturns('all')">All Returns</div>
+        <div class="filter-chip" onclick="filterReturns('pending')">Open</div>
+        <div class="filter-chip" onclick="filterReturns('approved')">Approved</div>
+        <div class="filter-chip" onclick="filterReturns('completed')">Completed</div>
+        <div class="filter-chip" onclick="filterReturns('rejected')">Rejected</div>
+    </div>
+
+    <div class="search-bar" style="margin: 0 20px 20px;">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Search by return ID, shop name..." id="returnSearch" oninput="searchReturns()">
+    </div>
+
+    <div class="order-list-container" id="globalReturnsList" style="padding: 0 20px 120px;">
+        <!-- Returns will be dynamically populated -->
+        <div class="empty-state" id="noReturnsMessage">
+            <div class="empty-icon">📦</div>
+            <div class="empty-title">No Returns Found</div>
+            <div class="empty-message">All returns are processed</div>
+        </div>
+    </div>
+</div>
+<!-- Then comes the Bottom Navigation -->
+<div class="bottom-nav">
+    <!-- ... existing nav code ... -->
+</div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="navHome" onclick="setActiveNav('navHome'); navigateTo('homeScreen')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" id="navShops" onclick="setActiveNav('navShops'); navigateTo('shopsScreen')">
+                <div class="nav-icon">🏪</div>
+                <div class="nav-label">Shops</div>
+            </div>
+            <div class="nav-item" id="navRoutes" onclick="setActiveNav('navRoutes'); navigateTo('routeScreen')">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Routes</div>
+            </div>
+            <div class="nav-item" id="navProfile">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profile</div>
+            </div>
+        </div>
+    </div>
+    <!-- Order Details Modal -->
+<!-- Order Details Modal - Fixed as Pop-up -->
+<div class="modal-overlay" id="orderDetailsModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title">Order Details</div>
+                <div class="modal-subtitle" id="modalOrderId">ORD-8821</div>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('orderDetailsModal').classList.remove('active')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <span class="order-info-label">Shop</span>
+                    <span class="order-info-value" id="modalShopName">SuperMart Express</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Order Date</span>
+                    <span class="order-info-value" id="modalOrderDate">Jan 28, 2026</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Delivery Date</span>
+                    <span class="order-info-value" id="modalDeliveryDate">Jan 30, 2026</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Status</span>
+                    <span class="order-info-value" id="modalOrderStatus" style="font-weight: 800;">Processing</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Payment Mode</span>
+                    <span class="order-info-value" id="modalPaymentMode">CREDIT</span>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Order Items</div>
+                <div class="order-items-list" id="modalOrderItems">
+                    <!-- Items will be populated here -->
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Order Summary</div>
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="modalSubtotal">₹24,000</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Scheme Discount</span>
+                        <span id="modalDiscount">-₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>GST</span>
+                        <span id="modalGST">₹2,880</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Net Amount</span>
+                        <span id="modalTotal">₹26,880</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Notes</div>
+                <div class="order-notes" id="modalNotes">
+                    Priority delivery requested
+                </div>
+            </div>
+            
+            <!-- In the orderDetailsModal section, update the modal-actions buttons: -->
+<div class="modal-actions">
+    <button class="modal-btn secondary" onclick="document.getElementById('orderDetailsModal').classList.remove('active')">
+        Close
+    </button>
+    <button class="modal-btn edit" onclick="editOrder(document.getElementById('modalOrderId').textContent)">
+        ✏️ Edit Order
+    </button>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal - Fixed as Pop-up -->
+<div class="modal-overlay" id="updateStatusModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title">Update Order Status</div>
+                <div class="modal-subtitle" id="updateOrderId">ORD-8821</div>
+            </div>
+            <button class="modal-close" onclick="closeUpdateStatusModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <div class="section-title">Select New Status</div>
+                <div class="status-options" id="statusOptionsList">
+                    <!-- Status options will be populated here -->
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Add Notes (Optional)</div>
+                <textarea class="form-textarea" id="statusNotes" 
+                    placeholder="Add notes about status change..." rows="3"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeUpdateStatusModal()">
+                    Cancel
+                </button>
+                <button class="modal-btn primary" onclick="confirmStatusUpdate()">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal-overlay" id="updateStatusModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title">Update Order Status</div>
+                <div class="modal-subtitle" id="updateOrderId">ORD-8821</div>
+            </div>
+            <button class="modal-close" onclick="closeUpdateStatusModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <div class="section-title">Select New Status</div>
+                <div class="status-options" id="statusOptionsList">
+                    <!-- Status options will be populated here -->
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Add Notes (Optional)</div>
+                <textarea class="form-textarea" id="statusNotes" 
+                    placeholder="Add notes about status change..." rows="3"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeUpdateStatusModal()">
+                    Cancel
+                </button>
+                <button class="modal-btn primary" onclick="confirmStatusUpdate()">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Order Details Modal -->
+<div class="modal-overlay" id="orderDetailsModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title">Order Details</div>
+                <div class="modal-subtitle" id="modalOrderId">ORD-8821</div>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('orderDetailsModal').classList.remove('active')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <span class="order-info-label">Shop</span>
+                    <span class="order-info-value" id="modalShopName">SuperMart Express</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Order Date</span>
+                    <span class="order-info-value" id="modalOrderDate">Jan 28, 2026</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Delivery Date</span>
+                    <span class="order-info-value" id="modalDeliveryDate">Jan 30, 2026</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Status</span>
+                    <span class="order-info-value" id="modalOrderStatus" style="font-weight: 800;">Processing</span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-info-label">Payment Mode</span>
+                    <span class="order-info-value" id="modalPaymentMode">CREDIT</span>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Order Items</div>
+                <div class="order-items-list" id="modalOrderItems">
+                    <!-- Items will be populated here -->
+                    <div class="modal-order-item">
+                        <div class="modal-order-item-name">Coca Cola</div>
+                        <div class="modal-order-item-details">
+                            <span>50 × ₹35</span>
+                            <span>₹1,750</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Order Summary</div>
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="modalSubtotal">₹24,000</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Scheme Discount</span>
+                        <span id="modalDiscount">-₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>GST</span>
+                        <span id="modalGST">₹2,880</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Net Amount</span>
+                        <span id="modalTotal">₹26,880</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Notes</div>
+                <div class="order-notes" id="modalNotes">
+                    Priority delivery requested
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="document.getElementById('orderDetailsModal').classList.remove('active')">
+                    Close
+                </button>
+                <button class="modal-btn primary" onclick="updateOrderStatusModal(document.getElementById('modalOrderId').textContent)">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal-overlay" id="updateStatusModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="modal-title">Update Order Status</div>
+                <div class="modal-subtitle" id="updateOrderId">ORD-8821</div>
+            </div>
+            <button class="modal-close" onclick="closeUpdateStatusModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <div class="section-title">Select New Status</div>
+                <div class="status-options" id="statusOptionsList">
+                    <!-- Status options will be populated here -->
+                    <div class="status-option selected">
+                        <div class="status-indicator" style="background: var(--primary);"></div>
+                        <span>Processing</span>
+                        <span class="current-status">Current</span>
+                    </div>
+                    <div class="status-option">
+                        <div class="status-indicator" style="background: var(--info);"></div>
+                        <span>Shipped</span>
+                    </div>
+                    <div class="status-option">
+                        <div class="status-indicator" style="background: var(--accent);"></div>
+                        <span>Delivered</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="section-title">Add Notes (Optional)</div>
+                <textarea class="form-textarea" id="statusNotes" 
+                    placeholder="Add notes about status change..." rows="3"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeUpdateStatusModal()">
+                    Cancel
+                </button>
+                <button class="modal-btn primary" onclick="confirmStatusUpdate()">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
